@@ -197,7 +197,40 @@ class game {
             return $gamestate;
         }
 
-        // Double the bet.
+        // Handle split hands.
+        if (!empty($gamestate['is_split'])) {
+            $currenthand = $gamestate['current_hand'] ?? 1;
+
+            if ($currenthand === 1) {
+                $gamestate['bet'] *= 2;
+                $gamestate['playerhand'][] = array_pop($gamestate['deck']);
+
+                if (self::is_bust($gamestate['playerhand'])) {
+                    $gamestate['hand1_status'] = 'bust';
+                    $gamestate['current_hand'] = 2;
+                    return $gamestate;
+                }
+
+                // Stand on this hand, move to next.
+                $gamestate['hand1_status'] = 'stand';
+                $gamestate['current_hand'] = 2;
+                return $gamestate;
+            } else {
+                $gamestate['splitbet'] *= 2;
+                $gamestate['splithand'][] = array_pop($gamestate['deck']);
+
+                if (self::is_bust($gamestate['splithand'])) {
+                    $gamestate['hand2_status'] = 'bust';
+                    return self::finish_split_game($gamestate);
+                }
+
+                // Stand on this hand, finish game.
+                $gamestate['hand2_status'] = 'stand';
+                return self::finish_split_game($gamestate);
+            }
+        }
+
+        // Normal (non-split) play.
         $gamestate['bet'] *= 2;
         $gamestate['doubled'] = true;
 

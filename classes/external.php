@@ -186,8 +186,14 @@ class external extends external_api {
         }
 
         // Check if user has enough points to double.
+        // For split games, check the correct bet based on current hand.
         $userpoints = game::get_user_points($USER->id);
-        if ($userpoints->points < $gamestate['bet']) {
+        $currentbet = $gamestate['bet'];
+        if (!empty($gamestate['is_split']) && ($gamestate['current_hand'] ?? 1) === 2) {
+            $currentbet = $gamestate['splitbet'];
+        }
+
+        if ($userpoints->points < $currentbet) {
             return [
                 'success' => false,
                 'message' => get_string('notenoughpoints', 'block_blackjack'),
@@ -196,11 +202,18 @@ class external extends external_api {
         }
 
         $gamestate = game::double_down($gamestate);
+        $_SESSION['blackjack_game'] = $gamestate;
 
-        $points = game::update_user_points($USER->id, $gamestate['payout']);
-        unset($_SESSION['blackjack_game']);
+        $points = $userpoints->points;
 
-        return self::format_game_response($gamestate, $points, true);
+        // Check if game is finished.
+        if ($gamestate['status'] !== 'playing') {
+            $points = game::update_user_points($USER->id, $gamestate['payout']);
+            unset($_SESSION['blackjack_game']);
+            return self::format_game_response($gamestate, $points, true);
+        }
+
+        return self::format_game_response($gamestate, $points, false);
     }
 
     /**
