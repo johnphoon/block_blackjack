@@ -1,0 +1,58 @@
+{{!
+    Blackjack game template.
+
+    @package block_blackjack
+}}
+<div id="block-blackjack-{{blockid}}" class="block-blackjack-container">
+    <div class="blackjack-header">
+        <span class="blackjack-points-label">{{#str}}points, block_blackjack{{/str}}:</span>
+        <span class="blackjack-points">{{points}}</span>
+    </div>
+
+    <div class="blackjack-start-area">
+        <div class="blackjack-bet-area">
+            <label for="blackjack-bet-{{blockid}}">{{#str}}bet, block_blackjack{{/str}}:</label>
+            <input type="number" id="blackjack-bet-{{blockid}}" class="blackjack-bet" value="10" min="1" max="100">
+        </div>
+        <button class="btn btn-primary blackjack-deal">{{#str}}deal, block_blackjack{{/str}}</button>
+    </div>
+
+    <div class="blackjack-game-area" style="display:none;">
+        <div class="blackjack-hand blackjack-dealer-hand">
+            <div class="blackjack-hand-label">
+                {{#str}}dealer, block_blackjack{{/str}}: <span class="blackjack-dealer-score">0</span>
+            </div>
+            <div class="blackjack-dealer-cards blackjack-cards"></div>
+        </div>
+
+        <div class="blackjack-hand blackjack-player-hand">
+            <div class="blackjack-hand-label">
+                {{#str}}you, block_blackjack{{/str}}: <span class="blackjack-player-score">0</span>
+            </div>
+            <div class="blackjack-player-cards blackjack-cards"></div>
+        </div>
+
+        <div class="blackjack-bet-display">
+            {{#str}}currentbet, block_blackjack{{/str}}: <span class="blackjack-current-bet">0</span>
+        </div>
+
+        <div class="blackjack-actions">
+            <button class="btn btn-success blackjack-hit">{{#str}}hit, block_blackjack{{/str}}</button>
+            <button class="btn btn-warning blackjack-stand">{{#str}}stand, block_blackjack{{/str}}</button>
+            <button class="btn btn-info blackjack-double">{{#str}}doubledown, block_blackjack{{/str}}</button>
+        </div>
+
+        <div class="blackjack-result-area" style="display:none;">
+            <div class="blackjack-payout"></div>
+            <button class="btn btn-primary blackjack-deal">{{#str}}playagain, block_blackjack{{/str}}</button>
+        </div>
+    </div>
+
+    <div class="blackjack-message" style="display:none;"></div>
+</div>
+
+{{#js}}
+require(['block_blackjack/game'], function(game) {
+    game.init({{blockid}});
+});
+{{/js}}

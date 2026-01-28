@@ -1,0 +1,175 @@
+.block-blackjack-container {
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.blackjack-header {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.blackjack-points {
+    color: #28a745;
+}
+
+.blackjack-start-area {
+    text-align: center;
+}
+
+.blackjack-bet-area {
+    margin-bottom: 10px;
+}
+
+.blackjack-bet {
+    width: 60px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+.blackjack-hand {
+    margin-bottom: 15px;
+}
+
+.blackjack-hand-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.blackjack-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 70px;
+}
+
+.blackjack-card {
+    width: 45px;
+    height: 65px;
+    border: 2px solid #333;
+    border-radius: 5px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.blackjack-card.card-red {
+    color: #dc3545;
+}
+
+.blackjack-card.card-black {
+    color: #212529;
+}
+
+.blackjack-card.card-hidden {
+    background: linear-gradient(135deg, #1a5490 25%, #2980b9 25%, #2980b9 50%, #1a5490 50%, #1a5490 75%, #2980b9 75%);
+    background-size: 10px 10px;
+    color: transparent;
+}
+
+.card-value {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.card-suit {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.blackjack-bet-display {
+    text-align: center;
+    margin: 10px 0;
+    font-size: 13px;
+}
+
+.blackjack-actions {
+    text-align: center;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+}
+
+.blackjack-actions .btn {
+    margin: 2px;
+}
+
+.blackjack-result-area {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.blackjack-payout {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.blackjack-payout.win {
+    color: #28a745;
+}
+
+.blackjack-payout.loss {
+    color: #dc3545;
+}
+
+.blackjack-message {
+    text-align: center;
+    margin-top: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+/* Confetti styles */
+.blackjack-confetti {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1000;
+}
+
+.confetti-piece {
+    position: absolute;
+    top: -10px;
+    border-radius: 2px;
+    animation: confetti-fall linear forwards;
+    transform-origin: center;
+}
+
+@keyframes confetti-fall {
+    0% {
+        top: -10px;
+        opacity: 1;
+        transform: translateX(0) rotateZ(0deg);
+    }
+    25% {
+        transform: translateX(15px) rotateZ(90deg);
+    }
+    50% {
+        transform: translateX(-15px) rotateZ(180deg);
+    }
+    75% {
+        transform: translateX(15px) rotateZ(270deg);
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+        transform: translateX(-15px) rotateZ(360deg);
+    }
+}
