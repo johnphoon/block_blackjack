@@ -40,6 +40,14 @@ $functions = [
         'ajax' => true,
         'loginrequired' => true
     ],
+    'block_blackjack_split' => [
+        'classname' => 'block_blackjack\external',
+        'methodname' => 'split',
+        'description' => 'Player splits their pair into two hands',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true
+    ],
     'block_blackjack_get_state' => [
         'classname' => 'block_blackjack\external',
         'methodname' => 'get_state',

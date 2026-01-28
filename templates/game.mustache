@@ -25,21 +25,36 @@
             <div class="blackjack-dealer-cards blackjack-cards"></div>
         </div>
 
-        <div class="blackjack-hand blackjack-player-hand">
-            <div class="blackjack-hand-label">
-                {{#str}}you, block_blackjack{{/str}}: <span class="blackjack-player-score">0</span>
+        <div class="blackjack-hands-container">
+            <div class="blackjack-hand blackjack-player-hand">
+                <div class="blackjack-hand-label">
+                    {{#str}}hand1, block_blackjack{{/str}}: <span class="blackjack-player-score">0</span>
+                    <span class="blackjack-hand1-result" style="display:none;"></span>
+                </div>
+                <div class="blackjack-player-cards blackjack-cards"></div>
             </div>
-            <div class="blackjack-player-cards blackjack-cards"></div>
+
+            <div class="blackjack-hand blackjack-split-hand" style="display:none;">
+                <div class="blackjack-hand-label">
+                    {{#str}}hand2, block_blackjack{{/str}}: <span class="blackjack-split-score">0</span>
+                    <span class="blackjack-hand2-result" style="display:none;"></span>
+                </div>
+                <div class="blackjack-split-cards blackjack-cards"></div>
+            </div>
         </div>
 
         <div class="blackjack-bet-display">
             {{#str}}currentbet, block_blackjack{{/str}}: <span class="blackjack-current-bet">0</span>
+            <span class="blackjack-split-bet" style="display:none;">
+                | {{#str}}hand2, block_blackjack{{/str}}: <span class="blackjack-split-bet-amount">0</span>
+            </span>
         </div>
 
         <div class="blackjack-actions">
             <button class="btn btn-success blackjack-hit">{{#str}}hit, block_blackjack{{/str}}</button>
             <button class="btn btn-warning blackjack-stand">{{#str}}stand, block_blackjack{{/str}}</button>
             <button class="btn btn-info blackjack-double">{{#str}}doubledown, block_blackjack{{/str}}</button>
+            <button class="btn btn-secondary blackjack-split" style="display:none;">{{#str}}split, block_blackjack{{/str}}</button>
         </div>
 
         <div class="blackjack-result-area" style="display:none;">

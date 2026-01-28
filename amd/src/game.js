@@ -45,6 +45,11 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, ajax, notificat
                 e.preventDefault();
                 self.doubleDown();
             });
+
+            container.on('click', '.blackjack-split', function(e) {
+                e.preventDefault();
+                self.split();
+            });
         },
 
         /**
@@ -114,10 +119,24 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, ajax, notificat
         },
 
         /**
+         * Player splits their pair.
+         */
+        split: function() {
+            var self = this;
+            ajax.call([{
+                methodname: 'block_blackjack_split',
+                args: {}
+            }])[0].done(function(response) {
+                self.updateUI(response);
+            }).fail(notification.exception);
+        },
+
+        /**
          * Update the UI based on game state.
          * @param {object} state
          */
         updateUI: function(state) {
+            var self = this;
             var container = $('#block-blackjack-' + this.blockid);
 
             // Update points display.
@@ -134,20 +153,62 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, ajax, notificat
                 container.find('.blackjack-game-area').hide();
                 container.find('.blackjack-start-area').show();
                 container.find('.blackjack-message').text('').hide();
+                container.find('.blackjack-split-hand').hide();
             } else {
                 container.find('.blackjack-game-area').show();
                 container.find('.blackjack-start-area').hide();
 
-                // Update cards.
+                // Update dealer cards.
                 this.renderCards(container.find('.blackjack-dealer-cards'), state.dealercards);
-                this.renderCards(container.find('.blackjack-player-cards'), state.playercards);
-
-                // Update scores.
                 container.find('.blackjack-dealer-score').text(state.dealerscore);
+
+                // Update hand 1 cards.
+                this.renderCards(container.find('.blackjack-player-cards'), state.playercards);
                 container.find('.blackjack-player-score').text(state.playerscore);
 
-                // Update bet display.
-                container.find('.blackjack-current-bet').text(state.bet);
+                // Handle split hands.
+                if (state.issplit) {
+                    container.find('.blackjack-split-hand').show();
+                    this.renderCards(container.find('.blackjack-split-cards'), state.splitcards);
+                    container.find('.blackjack-split-score').text(state.splitscore);
+
+                    // Highlight current hand.
+                    container.find('.blackjack-player-hand').removeClass('active-hand');
+                    container.find('.blackjack-split-hand').removeClass('active-hand');
+
+                    if (!state.gameover) {
+                        if (state.currenthand === 1) {
+                            container.find('.blackjack-player-hand').addClass('active-hand');
+                        } else {
+                            container.find('.blackjack-split-hand').addClass('active-hand');
+                        }
+                    }
+
+                    // Update bet displays.
+                    container.find('.blackjack-current-bet').text(state.bet);
+                    container.find('.blackjack-split-bet-amount').text(state.splitbet);
+                    container.find('.blackjack-split-bet').show();
+
+                    // Show hand results if game over.
+                    if (state.gameover) {
+                        var hand1Result = self.formatHandResult(state.hand1result, state.payout1);
+                        var hand2Result = self.formatHandResult(state.hand2result, state.payout2);
+                        container.find('.blackjack-hand1-result').html(hand1Result).show();
+                        container.find('.blackjack-hand2-result').html(hand2Result).show();
+                    } else {
+                        container.find('.blackjack-hand1-result').hide();
+                        container.find('.blackjack-hand2-result').hide();
+                    }
+                } else {
+                    container.find('.blackjack-split-hand').hide();
+                    container.find('.blackjack-split-bet').hide();
+                    container.find('.blackjack-hand1-result').hide();
+                    container.find('.blackjack-hand2-result').hide();
+                    container.find('.blackjack-player-hand').removeClass('active-hand');
+
+                    // Update bet display.
+                    container.find('.blackjack-current-bet').text(state.bet);
+                }
 
                 // Show/hide action buttons.
                 if (state.gameover) {
@@ -181,8 +242,36 @@ define(['jquery', 'core/ajax', 'core/notification'], function($, ajax, notificat
                     } else {
                         container.find('.blackjack-double').hide();
                     }
+
+                    // Show/hide split button.
+                    if (state.cansplit) {
+                        container.find('.blackjack-split').show();
+                    } else {
+                        container.find('.blackjack-split').hide();
+                    }
                 }
             }
+        },
+
+        /**
+         * Format hand result for display.
+         * @param {string} result
+         * @param {number} payout
+         * @return {string}
+         */
+        formatHandResult: function(result, payout) {
+            var className = '';
+            var payoutStr = '';
+            if (payout > 0) {
+                className = 'win';
+                payoutStr = '+' + payout;
+            } else if (payout < 0) {
+                className = 'loss';
+                payoutStr = payout;
+            } else {
+                payoutStr = '0';
+            }
+            return '<span class="hand-result ' + className + '">' + payoutStr + '</span>';
         },
 
         /**
